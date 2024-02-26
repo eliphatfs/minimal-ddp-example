@@ -37,11 +37,15 @@ def demo_basic(rank, world_size):
     loss_fn = nn.MSELoss()
     optimizer = optim.SGD(ddp_model.parameters(), lr=0.001)
 
-    optimizer.zero_grad()
-    outputs = ddp_model(torch.randn(20, 10))
-    labels = torch.randn(20, 5).to(rank)
-    loss_fn(outputs, labels).backward()
-    optimizer.step()
+    print("before start")
+    for i in range(10000):
+        optimizer.zero_grad()
+        outputs = ddp_model(torch.randn(20, 10))
+        labels = torch.randn(20, 5).to(rank)
+        loss_fn(outputs, labels).backward()
+        optimizer.step()
+        if i % 100 == 0:
+            print(i)
 
     cleanup()
 
